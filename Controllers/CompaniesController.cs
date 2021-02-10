@@ -41,6 +41,7 @@ namespace WebApi.Controllers
             var company = await repository.GetCompanyAsync(id);
             if (company == null)
             {
+
                 return NotFound();
             }
             var users = await repository.GetByCompanyAsync(company.Id);
