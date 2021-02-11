@@ -87,7 +87,6 @@ namespace WebApi.Controllers
         private Company MapCompany(CompanyNew comNew) =>
             new Company
             {
-                Id = comNew.Id,
                 Name = comNew.Name                
             };
     }

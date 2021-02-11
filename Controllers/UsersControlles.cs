@@ -54,12 +54,13 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] User user)
+        public async Task<ActionResult> Post([FromBody] UserNew userNew)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Values);
             }
+            var user = MapUser(userNew);
             await repository.AddUserAsync(user);
             return  CreatedAtAction(nameof(GetbyID), new { id = user.Id }, new { id = user.Id });
         }
@@ -86,5 +87,12 @@ namespace WebApi.Controllers
             return Ok(resp);
         }
 
+        private User MapUser(UserNew userNew) =>
+        new User
+        {
+            Name = userNew.Name,
+            Activity = userNew.Activity,
+            CompanyId = userNew.CompanyId
+        };
     }
 }
