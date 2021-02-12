@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SQL_API.Infrastructure;
 using SQL_API.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Infrastructure.Repos;
@@ -39,11 +41,11 @@ namespace WebApi.Controllers
             {
                 return NotFound();
             }
-            return Ok(user);
+            return Ok(user.Result);
         }
 
         [HttpGet("Company/{companyId}")]
-        public async Task<ActionResult> GetbyCompanyID(int companyId)
+        public async Task<ActionResult> GetbyCompanyId(int companyId)
         {
             var users = await repository.GetByCompanyAsync(companyId);
             if (users == null)
@@ -80,6 +82,44 @@ namespace WebApi.Controllers
         public ActionResult Delete(int id)
         {
             var resp = repository.DeleteUserAsync(id).Result;
+            if (resp == null)
+            {
+                return NotFound();
+            }
+            return Ok(resp);
+        }
+
+        //GET item
+        [HttpGet("Photo/{id}")]
+        public async Task<ActionResult> GetItem(int id)
+        {
+            var item = await repository.GetUserPhotoAsync(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            return item;
+        }
+
+        [HttpPost("{id}/Photo")]
+        public async Task<ActionResult> PostPhoto(int id, IFormFile file)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+            var stream = file.OpenReadStream();
+            var memory = new MemoryStream();
+            stream.CopyTo(memory);
+            var bytes = memory.ToArray();
+            await repository.AddUserPhotoAsync(id, bytes, file.ContentType);
+            return CreatedAtAction(nameof(GetItem), new { id = id, }, new { photoId = id, });
+        }
+
+        [HttpDelete("{id}/Photo")]
+        public ActionResult DeletePhoto(int id)
+        {
+            var resp = repository.DeletePhotoAsync(id).Result;
             if (resp == null)
             {
                 return NotFound();

@@ -1,10 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using SQL_API.Infrastructure;
 using SQL_API.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApi.Models;
 
 namespace WebApi.Infrastructure.Repos
 {
@@ -45,7 +49,46 @@ namespace WebApi.Infrastructure.Repos
             var u = GetUserAsync(id).Result;
             if (u != null)
             {
-                var state = _context.Users.Remove(u).State.ToString();
+                var state = _context.Users.Remove(u).ToString();
+                await _context.SaveChangesAsync();
+                return state;
+            }
+            return null;
+        }
+
+        public async Task<FileStreamResult> GetUserPhotoAsync(int id)
+        {
+            var userPhoto = await _context.UserPhotos.FindAsync(id);
+            if(userPhoto!=null)
+            {
+                var stream = new MemoryStream(userPhoto.Photo);
+                return new FileStreamResult(stream, userPhoto.ContentType);
+            }
+            return null;           
+        }
+
+
+        public async Task AddUserPhotoAsync(int userId, byte[] input, string contentType)
+        {
+            var userPhoto = new UserPhoto()
+            {
+                Id = userId,
+                Photo = input,
+                ContentType = contentType
+            };
+            await _context.AddAsync(userPhoto);
+            await _context.SaveChangesAsync();             
+        }
+
+        public async Task<string> DeletePhotoAsync(int id)
+        {
+            var u = await _context.UserPhotos.FindAsync(id);
+            if (u != null)
+            {
+                // SqlParameter photoId = new SqlParameter("@photoId", id);
+                // var del = await  _context.Database.ExecuteSqlRawAsync("Delete From UserPhotos where Id = @photoId", photoId);
+                //  var numberofRows = del.ToString();
+                var state = _context.UserPhotos.Remove(u).ToString();
                 await _context.SaveChangesAsync();
                 return state;
             }
