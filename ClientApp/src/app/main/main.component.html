@@ -1,3 +1,9 @@
 <nav class="navbar navbar-expand-lg bg-dark">
-    <p class="navbar-brand d-flex justify-content-center" href='#'>Users</p>
+    <div class="navbar-brand">
+        <h1>Users</h1>
+    </div>
 </nav>
+<div class="users" *ngFor="let u of users | async">
+    <h5>{{u.name}}</h5>
+
+</div>
