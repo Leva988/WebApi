@@ -13,8 +13,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HealthChecks.UI.Client;
 using WebApi.Infrastructure.Repos;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApi
 {
@@ -33,9 +37,12 @@ namespace WebApi
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-            services.AddTransient<IRepository, Repository>();          
+            services.AddTransient<IRepository, Repository>(); 
+            services.AddHealthChecks()
+                      .AddDbContextCheck<SqlContext>();
             services.AddDbContext<SqlContext>(options =>
                 options.UseSqlServer(connection));
+            services.AddHealthChecks();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
@@ -64,8 +71,27 @@ namespace WebApi
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
+                    endpoints.MapHealthChecks("/hc", new HealthCheckOptions
+                          {
+                              Predicate = _ => true,
+                              ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+                              ResultStatusCodes =
+                              {
+                                  [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                                  [HealthStatus.Degraded] = StatusCodes.Status200OK,
+                                  [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+                              }
+                          });
+                    endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
+                          {
+                              Predicate = r => r.Name.Contains("self")
+                          });
+                    
             });
+
 
             app.UseSpa(spa =>
             {
