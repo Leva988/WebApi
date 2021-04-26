@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SQL_API.Models
 {
-    public class Company
+    public class UserWithCompany
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
@@ -15,7 +15,12 @@ namespace SQL_API.Models
 
         public string Name { get; set; }
 
-        public IEnumerable<UserWithCompany> Users { get; set; }
+        public int Age { get; set; }
+
+        public string Activity { get; set; }
+
+        public string Company { get; set; }
         
+
     }
 }

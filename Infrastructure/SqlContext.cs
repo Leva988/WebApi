@@ -14,8 +14,6 @@ namespace SQL_API.Infrastructure
 
         public DbSet<Company> Companies { get; set; }
 
-        public DbSet<UserPhoto> UserPhotos { get; set; }
-
         public SqlContext(DbContextOptions<SqlContext> options)
             : base(options)
         {

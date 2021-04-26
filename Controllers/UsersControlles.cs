@@ -34,14 +34,14 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetbyID(int id)
+        public async Task<ActionResult> GetbyID(int id)
         {
-            var user = repository.GetUserAsync(id);
+            var user = await repository.GetUserAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
-            return Ok(user.Result);
+            return Ok(user);
         }
 
         [HttpGet("Company/{companyId}")]
@@ -67,59 +67,23 @@ namespace WebApi.Controllers
             return  CreatedAtAction(nameof(GetbyID), new { id = user.Id }, new { id = user.Id });
         }
 
-        [HttpPut]
-        public async Task<ActionResult> Put([FromBody] User user)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(int id, [FromBody] UserNew userNew)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Values);
             }
+            var user = MapUser(userNew);
+            user.Id = id;
             await repository.UpdateUserAsync(user);
             return  CreatedAtAction(nameof(GetbyID), new { id = user.Id }, new { id = user.Id });
         }
 
         [HttpDelete]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var resp = repository.DeleteUserAsync(id).Result;
-            if (resp == null)
-            {
-                return NotFound();
-            }
-            return Ok(resp);
-        }
-
-        //GET item
-        [HttpGet("Photo/{id}")]
-        public async Task<ActionResult> GetItem(int id)
-        {
-            var item = await repository.GetUserPhotoAsync(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            return item;
-        }
-
-        [HttpPost("{id}/Photo")]
-        public async Task<ActionResult> PostPhoto(int id, IFormFile file)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.Values);
-            }
-            var stream = file.OpenReadStream();
-            var memory = new MemoryStream();
-            stream.CopyTo(memory);
-            var bytes = memory.ToArray();
-            await repository.AddUserPhotoAsync(id, bytes, file.ContentType);
-            return CreatedAtAction(nameof(GetItem), new { id = id, }, new { photoId = id, });
-        }
-
-        [HttpDelete("{id}/Photo")]
-        public ActionResult DeletePhoto(int id)
-        {
-            var resp = repository.DeletePhotoAsync(id).Result;
+            var resp = await repository.DeleteUserAsync(id);
             if (resp == null)
             {
                 return NotFound();

@@ -11,24 +11,21 @@ namespace WebApi.Infrastructure.Repos
 {
     public interface IRepository
     {
-        Task<IEnumerable<User>> GetUsersAsync();
+        #region  User
+        Task<IEnumerable<UserWithCompany>> GetUsersAsync();
 
-        Task<User> GetUserAsync(int id);
+        Task<UserWithCompany> GetUserAsync(int id);
 
-        Task<IEnumerable<User>> GetByCompanyAsync(int companyId);
+        Task<IEnumerable<UserWithCompany>> GetByCompanyAsync(int companyId);
 
         Task AddUserAsync(User user);
 
         Task UpdateUserAsync(User user);
 
         Task<string> DeleteUserAsync(int id);
+        #endregion
 
-        Task<FileStreamResult> GetUserPhotoAsync(int id);
-
-        Task AddUserPhotoAsync(int userId, byte[] input, string contentType);
-
-        Task<string> DeletePhotoAsync(int id);
-
+        #region Company
         Task<IEnumerable<Company>> GetCompaniesAsync();
 
         Task<Company> GetCompanyAsync(int id);
@@ -38,5 +35,6 @@ namespace WebApi.Infrastructure.Repos
         Task UpdateCompanyAsync(Company company);
 
         Task<string> DeleteCompanyAsync(int id);
+        #endregion
     }
 }

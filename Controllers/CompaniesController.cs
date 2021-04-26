@@ -61,22 +61,23 @@ namespace WebApi.Controllers
             return CreatedAtAction(nameof(GetbyID), new { id = company.Id }, new { id = company.Id });
         }
 
-        [HttpPut]
-        public async Task<ActionResult> Put([FromBody] CompanyNew comNew)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(int id,[FromBody] CompanyNew comNew)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Values);
             }
             var company = MapCompany(comNew);
+            company.Id = id;
             await repository.UpdateCompanyAsync(company);
-            return CreatedAtAction(nameof(GetbyID), new { id = company.Id }, new { id = company.Id });
+            return CreatedAtAction(nameof(GetbyID), new { id = id }, new { id = id });
         }
 
         [HttpDelete]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var resp = repository.DeleteCompanyAsync(id).Result;
+            var resp = await repository.DeleteCompanyAsync(id);
             if (resp == null)
             {
                 return NotFound();

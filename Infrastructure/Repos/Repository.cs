@@ -21,16 +21,49 @@ namespace WebApi.Infrastructure.Repos
             _context = context;
         }
 
-        public async Task<IEnumerable<User>> GetUsersAsync() =>
-           await _context.Users
+        #region User
+        public async Task<IEnumerable<UserWithCompany>> GetUsersAsync() =>
+           await _context.Users.Join(_context.Companies,
+            u => u.CompanyId,
+            c => c.Id,
+            (u, c) => new UserWithCompany() {
+                Id = u.Id,
+                Name = u.Name,
+                Age= u.Age,
+                Activity = u.Activity,
+                Company = c.Name
+            })                       
             .OrderBy(u => u.Id)
             .ToArrayAsync();
 
-        public async Task<User> GetUserAsync(int id) =>        
-           await _context.Users.FindAsync(id);
+        public async Task<UserWithCompany> GetUserAsync(int id) =>        
+           await _context.Users.Join(_context.Companies,
+            u => u.CompanyId,
+            c => c.Id,
+            (u, c) => new UserWithCompany() {
+                Id = u.Id,
+                Name = u.Name,
+                Age= u.Age,
+                Activity = u.Activity,
+                Company = c.Name
+            })                    
+           .Where(u => u.Id == id)
+           .FirstAsync();
 
-        public async Task<IEnumerable<User>> GetByCompanyAsync(int companyId) =>
-           await  _context.Users.Where(u => u.CompanyId == companyId).ToListAsync();
+        public async Task<IEnumerable<UserWithCompany>> GetByCompanyAsync(int companyId) =>
+           await  _context.Users                               
+             .Where(u => u.CompanyId == companyId)
+             .Join(_context.Companies,
+              u => u.CompanyId,
+              c => c.Id,
+              (u, c) => new UserWithCompany() {
+                  Id = u.Id,
+                  Name = u.Name,
+                  Age= u.Age,
+                  Activity = u.Activity,
+                  Company = c.Name
+              })
+            .ToListAsync();
 
         public async Task AddUserAsync(User user)
         {
@@ -46,55 +79,18 @@ namespace WebApi.Infrastructure.Repos
 
         public async Task<string> DeleteUserAsync(int id)
         {
-            var u = GetUserAsync(id).Result;
+            var u = await _context.Users.FindAsync(id);
             if (u != null)
             {
-                var state = _context.Users.Remove(u).ToString();
+                var state = _context.Users.Remove(u).State.ToString();
                 await _context.SaveChangesAsync();
                 return state;
             }
             return null;
         }
+        #endregion
 
-        public async Task<FileStreamResult> GetUserPhotoAsync(int id)
-        {
-            var userPhoto = await _context.UserPhotos.FindAsync(id);
-            if(userPhoto!=null)
-            {
-                var stream = new MemoryStream(userPhoto.Photo);
-                return new FileStreamResult(stream, userPhoto.ContentType);
-            }
-            return null;           
-        }
-
-
-        public async Task AddUserPhotoAsync(int userId, byte[] input, string contentType)
-        {
-            var userPhoto = new UserPhoto()
-            {
-                Id = userId,
-                Photo = input,
-                ContentType = contentType
-            };
-            await _context.AddAsync(userPhoto);
-            await _context.SaveChangesAsync();             
-        }
-
-        public async Task<string> DeletePhotoAsync(int id)
-        {
-            var u = await _context.UserPhotos.FindAsync(id);
-            if (u != null)
-            {
-                // SqlParameter photoId = new SqlParameter("@photoId", id);
-                // var del = await  _context.Database.ExecuteSqlRawAsync("Delete From UserPhotos where Id = @photoId", photoId);
-                //  var numberofRows = del.ToString();
-                var state = _context.UserPhotos.Remove(u).ToString();
-                await _context.SaveChangesAsync();
-                return state;
-            }
-            return null;
-        }
-
+        #region Company
         public async Task<IEnumerable<Company>> GetCompaniesAsync() =>
            await _context.Companies
             .OrderBy(u => u.Id)
@@ -117,7 +113,7 @@ namespace WebApi.Infrastructure.Repos
 
         public async Task<string> DeleteCompanyAsync(int id)
         {
-            var c = GetCompanyAsync(id).Result;
+            var c = await GetCompanyAsync(id);
             if (c!= null)
             {
                 var state = _context.Companies.Remove(c).State.ToString();
@@ -126,6 +122,6 @@ namespace WebApi.Infrastructure.Repos
             }
             return null;
         }
-
+        #endregion
     }
 }
