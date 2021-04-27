@@ -32,7 +32,8 @@ namespace WebApi.Infrastructure.Repos
                 Age= u.Age,
                 Activity = u.Activity,
                 Company = c.Name
-            })                       
+            })
+            .AsNoTracking()                       
             .OrderBy(u => u.Id)
             .ToArrayAsync();
 
@@ -46,7 +47,8 @@ namespace WebApi.Infrastructure.Repos
                 Age= u.Age,
                 Activity = u.Activity,
                 Company = c.Name
-            })                    
+            })
+           .AsNoTracking()                    
            .Where(u => u.Id == id)
            .FirstAsync();
 
@@ -63,6 +65,7 @@ namespace WebApi.Infrastructure.Repos
                   Activity = u.Activity,
                   Company = c.Name
               })
+            .AsNoTracking()
             .ToListAsync();
 
         public async Task AddUserAsync(User user)
@@ -94,10 +97,12 @@ namespace WebApi.Infrastructure.Repos
         public async Task<IEnumerable<Company>> GetCompaniesAsync() =>
            await _context.Companies
             .OrderBy(u => u.Id)
-            .ToArrayAsync();
+            .AsNoTracking()
+            .ToListAsync();
 
         public async Task<Company> GetCompanyAsync(int id) =>
-           await _context.Companies.FindAsync(id);
+           await _context.Companies
+           .FindAsync(id);
 
         public async Task AddCompanyAsync(Company company)
         {
