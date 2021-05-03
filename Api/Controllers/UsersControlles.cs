@@ -80,7 +80,7 @@ namespace WebApi.Controllers
             return  CreatedAtAction(nameof(GetbyID), new { id = user.Id }, new { id = user.Id });
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             var resp = await repository.DeleteUserAsync(id);
@@ -88,7 +88,7 @@ namespace WebApi.Controllers
             {
                 return NotFound();
             }
-            return Ok(resp);
+            return Ok();
         }
 
         private User MapUser(UserNew userNew) =>
@@ -96,6 +96,7 @@ namespace WebApi.Controllers
         {
             Name = userNew.Name,
             Activity = userNew.Activity,
+            Age = userNew.Age,
             CompanyId = userNew.CompanyId
         };
     }

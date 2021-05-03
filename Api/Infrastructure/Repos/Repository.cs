@@ -31,7 +31,8 @@ namespace WebApi.Infrastructure.Repos
                 Name = u.Name,
                 Age= u.Age,
                 Activity = u.Activity,
-                Company = c.Name
+                Company = c.Name,
+                CompanyId = u.CompanyId
             })
             .AsNoTracking()                       
             .OrderBy(u => u.Id)
@@ -46,7 +47,8 @@ namespace WebApi.Infrastructure.Repos
                 Name = u.Name,
                 Age= u.Age,
                 Activity = u.Activity,
-                Company = c.Name
+                Company = c.Name,
+                CompanyId = u.CompanyId
             })
            .AsNoTracking()                    
            .Where(u => u.Id == id)
@@ -63,7 +65,8 @@ namespace WebApi.Infrastructure.Repos
                   Name = u.Name,
                   Age= u.Age,
                   Activity = u.Activity,
-                  Company = c.Name
+                  Company = c.Name,
+                  CompanyId = u.CompanyId
               })
             .AsNoTracking()
             .ToListAsync();

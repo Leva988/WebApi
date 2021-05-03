@@ -3,5 +3,6 @@ export class User {
     name: string;
     age: number;
     activity: string;
+    company: string;
     companyId: number;
 }

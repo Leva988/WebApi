@@ -7,20 +7,10 @@ using System.Threading.Tasks;
 
 namespace SQL_API.Models
 {
-    public class UserWithCompany
+    [NotMapped]
+    public class UserWithCompany: User
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key]
-        public int Id { get; set; }
-
-        public string Name { get; set; }
-
-        public int Age { get; set; }
-
-        public string Activity { get; set; }
-
         public string Company { get; set; }
         
-
     }
 }

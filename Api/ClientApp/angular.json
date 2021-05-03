@@ -35,7 +35,10 @@
                             "./node_modules/ag-grid-community/dist/styles/ag-theme-balham.css",
                             "./node_modules/ag-grid-community/dist/styles/ag-theme-balham-dark.css"
                         ],
-                        "scripts": []
+                        "scripts": [
+                            "./node_modules/jquery/dist/jquery.min.js",
+                            "./node_modules/bootstrap/dist/js/bootstrap.min.js"
+                        ]
                     },
                     "configurations": {
                         "production": {
