@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SQL_API.Models;
+using WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Infrastructure.Repos;
-using WebApi.Models;
 
 namespace WebApi.Controllers
 {

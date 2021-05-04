@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SQL_API.Models
+namespace WebApi.Models
 {
     public class User
     {

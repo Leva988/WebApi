@@ -1,12 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SQL_API.Models;
+using WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApi.Models;
 
-namespace SQL_API.Infrastructure
+namespace WebApi.Infrastructure
 {
     public class SqlContext: DbContext
     {

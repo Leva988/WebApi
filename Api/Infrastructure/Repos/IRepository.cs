@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SQL_API.Models;
+using WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using SQL_API.Infrastructure;
-using SQL_API.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

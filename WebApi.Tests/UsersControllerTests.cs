@@ -4,7 +4,7 @@ using WebApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Infrastructure.Repos;
 using Moq;
-using SQL_API.Models;
+using WebApi.Models;
 using System.Collections.Generic;
 
 namespace WebApi.Tests
@@ -30,10 +30,10 @@ namespace WebApi.Tests
         {
             var users = new List<UserWithCompany>
                  {
-                     new UserWithCompany { Id=1, Name="Tom", Age=35, Activity = "инженер", Company = "bn"},
-                     new UserWithCompany { Id=2, Name="Alice", Age=29, Activity = "инженер", Company = "bn"},
-                     new UserWithCompany { Id=3, Name="Sam", Age=32, Activity = "инженер", Company = "bn"},
-                     new UserWithCompany { Id=4, Name="Kate", Age=30, Activity = "инженер", Company = "bn"}
+                     new UserWithCompany { Id=1, Name="Tom", Age=35, Activity = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ", Company = "bn"},
+                     new UserWithCompany { Id=2, Name="Alice", Age=29, Activity = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ", Company = "bn"},
+                     new UserWithCompany { Id=3, Name="Sam", Age=32, Activity = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ", Company = "bn"},
+                     new UserWithCompany { Id=4, Name="Kate", Age=30, Activity = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ", Company = "bn"}
                  };
             IEnumerable<UserWithCompany> en = users;
             return en;
