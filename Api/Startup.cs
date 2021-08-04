@@ -65,8 +65,6 @@ namespace WebApi
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
 
             app.UseStaticFiles();
             if (!env.IsDevelopment())
@@ -79,9 +77,15 @@ namespace WebApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1");
+                c.RoutePrefix = "swagger";
+            });
 
             app.UseAuthorization();
-
+            /*
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -104,7 +108,14 @@ namespace WebApi
                           });
                     
             });
+            */
 
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller}/{action=Index}/{id?}");
+            });
 
             app.UseSpa(spa =>
             {

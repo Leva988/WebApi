@@ -16,7 +16,7 @@ namespace WebApi.Infrastructure
         public SqlContext(DbContextOptions<SqlContext> options)
             : base(options)
         {
-           // Database.EnsureCreated();    создаем базу данных при первом обращении
+            Database.EnsureCreated();    // создаем базу данных при первом обращении
         }
 
     }

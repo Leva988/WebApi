@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  db:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Pass_123
+    ports:
+      - 1430:1433
+  webapi:
+    image: ${DOCKERREGISTRY-}webapi
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - ConnectionStrings__DefaultConnection=Server=db;Database=Api;User=SA;Password=Pass_123
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8078:80
+    depends_on:
+      - db
